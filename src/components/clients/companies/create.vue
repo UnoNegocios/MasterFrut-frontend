@@ -36,12 +36,12 @@
                             </v-row>
                             <v-row class="py-4">
                                 <v-col class="py-0" cols="12" sm="4" md="4">
-                                    <v-autocomplete outlined class="mt-3" dense rounded filled :rules="[v => !!v || 'Campo requerido']" clearable v-model="company.origin_id" :items="originLists" label="Procedencia*" item-text="name" item-value="id">
-                                        <template slot="no-data" class="pa-2">No existen procedencias relacionadas.</template>                      
+                                    <v-autocomplete outlined class="mt-3" dense rounded filled clearable v-model="company.type_id" :items="typeLists" label="Tipo de Cliente" item-text="type" item-value="id">
+                                        <template slot="no-data" class="pa-2">No existen tipos relacionados.</template>                      
                                     </v-autocomplete>
                                 </v-col>
                                 <v-col class="py-0" cols="12" sm="4" md="4">
-                                    <v-autocomplete outlined class="mt-3" dense rounded filled :rules="[v => !!v || 'Campo requerido']" clearable v-model="company.status_id" :items="statusLists" label="Estatus*" item-text="name" item-value="id">
+                                    <v-autocomplete outlined class="mt-3" dense rounded filled clearable v-model="company.status_id" :items="statusLists" label="Estatus*" item-text="name" item-value="id">
                                         <template slot="no-data" class="pa-2">No existen estatus relacionados.</template>                      
                                     </v-autocomplete>
                                 </v-col>
@@ -64,8 +64,8 @@
                                     
 
                                     <v-col class="pt-0" cols="12" sm="6" md="4">
-                                        <v-autocomplete outlined class="mt-3" dense clearable v-model="company.type_id" :items="typeLists" label="Tipo de Cliente" item-text="type" item-value="id">
-                                            <template slot="no-data" class="pa-2">No existen tipos relacionados.</template>                      
+                                        <v-autocomplete outlined class="mt-3" dense clearable v-model="company.origin_id" :items="originLists" label="Procedencia*" item-text="name" item-value="id">
+                                            <template slot="no-data" class="pa-2">No existen procedencias relacionadas.</template>                      
                                         </v-autocomplete>
                                         <v-autocomplete  outlined class="mt-3" dense clearable v-model="company.frequency_id" :items="frequencyLists" label="Frecuencia de Consumo" item-text="frequency" item-value="id">
                                             <template slot="no-data" class="pa-2">No existen frecuencias relacionadas.</template>                      
@@ -216,11 +216,8 @@ import axios from "axios";
         },
         computed: {
             grey(){
-                if( this.company.phase_id==''||this.company.phase_id==null||this.company.phase_id==undefined||
-                    this.company.origin_id==''||this.company.origin_id==null||this.company.origin_id==undefined||
-                    this.company.status_id==''||this.company.status_id==null||this.company.status_id==undefined||
-                    this.company.name==''||this.company.name==null||this.company.name==undefined){
-                        return true
+                if( this.company.name==''||this.company.name==null||this.company.name==undefined ){
+                    return true
                 }else{
                     return false
                 }

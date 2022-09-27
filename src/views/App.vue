@@ -762,14 +762,14 @@
       </v-list>
       <template v-slot:append>
         <div style="color:#9ca3a5; font-size: 12px;" class="pa-2">
-          UNOCRM | v4.1.39 <v-icon> mdi-settings</v-icon>
+          UNOCRM | v4.1.41 <v-icon> mdi-settings</v-icon>
         </div>
       </template>
     </v-navigation-drawer>
     <!-- header -->
     <v-app-bar class="elevation-0 px-0" :clipped-left="$vuetify.breakpoint.lgAndUp" app  color="#f4f5fa" dark><!-- box-shadow: 0px 0px 5px 0px rgb(112 112 115 / 30%)!important; -->
         <v-icon @click.stop="drawer = !drawer"  v-if="currentUser.name!='Felix'" class="mr-5" color="grey"> mdi-menu</v-icon>
-        <img style="height: 24px;" src="https://unocrm.mx/wp-content/uploads/2020/08/unocrm_logo-1.svg">
+        <img style="height: 24px;" src="/logo.png">
         <v-spacer></v-spacer>  
         <!-- search bar -->
         <!--v-text-field label="Search here for reports analytics and help" prepend-icon="mdi-magnify" rounded light class="hidden-sm-and-down mt-6"></v-text-field-->

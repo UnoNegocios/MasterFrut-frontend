@@ -36,12 +36,12 @@
                             </v-row>
                             <v-row class="py-4">
                                 <v-col class="py-0" cols="12" sm="4" md="4">
-                                    <v-autocomplete outlined class="mt-3" dense rounded filled :rules="[v => !!v || 'Campo requerido']" clearable v-model="client.origin_id" :items="originLists" label="Procedencia*" item-text="name" item-value="id">
+                                    <v-autocomplete outlined class="mt-3" dense rounded filled clearable v-model="client.origin_id" :items="originLists" label="Procedencia*" item-text="name" item-value="id">
                                         <template slot="no-data" class="pa-2">No existen procedencias relacionadas.</template>                      
                                     </v-autocomplete>
                                 </v-col>
                                 <v-col class="py-0" cols="12" sm="4" md="4">
-                                    <v-autocomplete outlined class="mt-3" dense rounded filled :rules="[v => !!v || 'Campo requerido']" clearable v-model="client.status_id" :items="statusLists" label="Estatus*" item-text="name" item-value="id">
+                                    <v-autocomplete outlined class="mt-3" dense rounded filled clearable v-model="client.status_id" :items="statusLists" label="Estatus*" item-text="name" item-value="id">
                                         <template slot="no-data" class="pa-2">No existen estatus relacionados.</template>                      
                                     </v-autocomplete>
                                 </v-col>

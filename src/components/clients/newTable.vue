@@ -141,7 +141,7 @@ export default {
             { text: 'Empresa', value: 'name', width: '100%'},
             { text: 'Código SAE', value: 'number',},
             { text: 'Rango de Consumo', value: 'phase' },
-            { text: 'Categoría', value: 'type_id',},
+            { text: 'Tipo', value: 'type_id',},
             { text: 'Procedencia', value: 'origin' },
             { text: 'Estatus', value: 'status' },
             { text: 'Responsable', value: 'salesman' },
