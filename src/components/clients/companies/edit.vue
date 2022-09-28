@@ -36,9 +36,10 @@
                             </v-row>
                             <v-row class="py-4">
                                 <v-col class="py-0" cols="12" sm="4" md="4">
-                                    <v-autocomplete outlined class="mt-3" dense rounded filled clearable v-model="client.origin_id" :items="originLists" label="Procedencia*" item-text="name" item-value="id">
-                                        <template slot="no-data" class="pa-2">No existen procedencias relacionadas.</template>                      
+                                    <v-autocomplete outlined class="mt-3" dense rounded filled clearable v-model="client.type_id" :items="typeLists" label="Tipo de Cliente" item-text="type" item-value="id">
+                                        <template slot="no-data" class="pa-2">No existen tipos relacionados.</template>                      
                                     </v-autocomplete>
+                                    
                                 </v-col>
                                 <v-col class="py-0" cols="12" sm="4" md="4">
                                     <v-autocomplete outlined class="mt-3" dense rounded filled clearable v-model="client.status_id" :items="statusLists" label="Estatus*" item-text="name" item-value="id">
@@ -61,8 +62,8 @@
                             <v-row class="mt-0">
                                 <v-row>
                                     <v-col class="pt-0" cols="12" sm="6" md="4">
-                                        <v-autocomplete outlined class="mt-3" dense clearable v-model="client.type_id" :items="typeLists" label="Tipo de Cliente" item-text="type" item-value="id">
-                                            <template slot="no-data" class="pa-2">No existen tipos relacionados.</template>                      
+                                        <v-autocomplete outlined class="mt-3" dense clearable v-model="client.origin_id" :items="originLists" label="Procedencia*" item-text="name" item-value="id">
+                                            <template slot="no-data" class="pa-2">No existen procedencias relacionadas.</template>                      
                                         </v-autocomplete>
                                         <v-autocomplete  outlined class="mt-3" dense clearable v-model="client.frequency_id" :items="frequencyLists" label="Frecuencia de Consumo" item-text="frequency" item-value="id">
                                             <template slot="no-data" class="pa-2">No existen frecuencias relacionadas.</template>                      
