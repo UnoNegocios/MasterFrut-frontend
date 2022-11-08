@@ -291,14 +291,14 @@ export default {
                 }
                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/dispatched_orders?" + link + "page=" + page + "&itemsPerPage=" + itemsPerPage).then(response => {
                     items = this.mapSales(response.data.data)
-                    total = response.data.meta.total
+                    total = response.data.data.length
                     if (sortBy.length === 1 && sortDesc.length === 1) {
                         if(sortDesc[0]){
                             axios
                             .get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/dispatched_orders?" + link + "page=" + page + "&sort=-" + sortBy[0] + "&itemsPerPage=" + itemsPerPage)
                             .then(response=>{
                                 items = this.mapSales(response.data.data)
-                                total = response.data.meta.total
+                                total = response.data.data.length
                                 resolve({
                                     items,
                                     total,
@@ -309,7 +309,7 @@ export default {
                             .get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/dispatched_orders?" + link + "page=" + page + "&sort=" + sortBy[0] + "&itemsPerPage=" + itemsPerPage)
                             .then(response=>{
                                 items = this.mapSales(response.data.data)
-                                total = response.data.meta.total
+                                total = response.data.data.length
                                 resolve({
                                     items,
                                     total,

@@ -245,7 +245,7 @@ export default {
                 }
                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/payrolls?" + link + "page=" + page + "&itemsPerPage=" + itemsPerPage).then(response => {
                     payrolls = this.mapPayrolls(response.data.data)
-                    total = total = response.data.meta.total
+                    total = response.data.meta.total
                     resolve({
                         payrolls,
                         total,

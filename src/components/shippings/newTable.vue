@@ -409,12 +409,12 @@ export default {
                     final_km:id.final_km,
                     initial_km:id.initial_km,
                     note:id.note,
-                    driver:id.driver.name + ' ' + id.driver.last,
-                    vehicle:id.vehicle.name,
+                    //driver:id.driver.name + ' ' + id.driver.last,
+                    //vehicle:id.vehicle.name,
                     weight: this.calcWeight(id.shipping_details) + ' kg',
                     route: id.route,
                     details:id.shipping_details,
-                    editedItem:[id].map(id=>{
+                    /*editedItem:[id].map(id=>{
                         return{
                             id:id.id,
                             created_at: id.created_at,
@@ -426,7 +426,7 @@ export default {
                             driver_id:id.driver.id*1,
                             vehicle_id:id.vehicle.id*1,
                         }
-                    })[0]
+                    })[0]*/
                 }
             })
         },

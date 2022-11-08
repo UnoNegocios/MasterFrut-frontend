@@ -56,7 +56,7 @@ export default {
             })
         },
         save () {
-            axios.patch(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/vehicles",Object.assign(this.editedItem)).then(response=>{
+            axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/vehicles",Object.assign(this.editedItem)).then(response=>{
                 this.close()
             }).catch(error => {
                 this.snackbar = {
