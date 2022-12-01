@@ -399,6 +399,27 @@ export default {
                 })
             })
         },
+        existId(value){
+            if(value!=undefined){
+                return (value.id)*1
+            }else{
+                return ''
+            }
+        },
+        existName(value){
+            if(value!=undefined){
+                return value.name
+            }else{
+                return ''
+            }
+        },
+        existLast(value){
+            if(value!=undefined){
+                return value.last
+            }else{
+                return ''
+            }
+        },
         mapShippings(shippings){
             return shippings.map(id=>{
                 return{
@@ -409,12 +430,12 @@ export default {
                     final_km:id.final_km,
                     initial_km:id.initial_km,
                     note:id.note,
-                    //driver:id.driver.name + ' ' + id.driver.last,
-                    //vehicle:id.vehicle.name,
+                    driver: this.existName(id.driver) + ' ' + this.existLast(id.driver),
+                    vehicle: this.existName(id.vehicle),
                     weight: this.calcWeight(id.shipping_details) + ' kg',
                     route: id.route,
                     details:id.shipping_details,
-                    /*editedItem:[id].map(id=>{
+                    editedItem:[id].map(id=>{
                         return{
                             id:id.id,
                             created_at: id.created_at,
@@ -423,10 +444,10 @@ export default {
                             final_km:id.final_km,
                             initial_km:id.initial_km,
                             note:id.note,
-                            driver_id:id.driver.id*1,
-                            vehicle_id:id.vehicle.id*1,
+                            driver_id:this.existId(id.driver),
+                            vehicle_id:this.existId(id.vehicle),
                         }
-                    })[0]*/
+                    })[0]
                 }
             })
         },

@@ -528,23 +528,29 @@ import axios from "axios";
                 })
             },
             save(){
-                
+                console.log(this.quotation)
+                var indexs = []
                 for(var i=0; i<this.quotation.items.length; i++){
+                    if(this.quotation.items[i].item == ''){
+                        indexs.push(i)
+                    }
                     this.quotation.items[i].weight = this.itemLists.filter(item=>item.id == this.quotation.items[i].item).map(item=>item.weight)[0]*this.quotation.items[i].quantity
                     this.quotation.items[i].value = this.itemLists.filter(item=>item.id == this.quotation.items[i].item).map(item=>item.price)[0]
                     this.quotation.items[i].cost = this.itemLists.filter(item=>item.id == this.quotation.items[i].item).map(item=>item.cost)[0]
                 }
-                
+                /*
+                console.log(this.quotation.items)
+                console.log(indexs)
+                for(var j=0; j<=indexs.length; j++){
+                    this.quotation.items.splice(indexs[j], 1)
+                }
+                console.log(this.quotation.items)
+                */
                 this.gris = true
                 this.quotation.created_by_user_id = this.currentUser.id
                 this.quotation.last_updated_by_user_id = this.currentUser.id
-                //if(this.quotation.type == 'Serie A'){
                 this.quotation.iva = 0
-                this.quotation.total = this.quotation.subtotal//*1.16
-                /*}else if(this.quotation.type == 'Serie B'){
-                    this.quotation.iva = this.quotation.subtotal*.16
-                    this.quotation.total = this.quotation.subtotal*1.16
-                }*/
+                this.quotation.total = this.quotation.subtotal
                 this.quotation.status = this.status 
                 this.$nextTick(() => {
                     axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/quotation/create",Object.assign(this.quotation)).then(response=>{
@@ -579,14 +585,14 @@ import axios from "axios";
 }
 </style>
 <style>
-.v-input__icon--prepend-inner i::before {
-    font-size: 18px!important;
-    color:#1976D2;
-}
-.v-text-field input, .v-label {
-    font-size: 14px;
-}
-.v-picker__title.primary{
-    display:none;
-}
+    .v-input__icon--prepend-inner i::before {
+        font-size: 18px!important;
+        color:#1976D2;
+    }
+    .v-text-field input, .v-label {
+        font-size: 14px;
+    }
+    .v-picker__title.primary{
+        display:none;
+    }
 </style>
