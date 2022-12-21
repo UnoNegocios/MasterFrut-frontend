@@ -51,7 +51,7 @@
                     </v-btn>
                 </v-toolbar>
                 <div class="pa-4">
-                    <v-card class="pt-3 pb-1 px-4 elevation-0 mb-2">
+                    <v-card class="pt-3 pb-1 px-4 elevation-0 mb-8">
                         <v-row class="mx-0 mt-0">
                             <v-col cols="6">
                                 <v-card-subtitle class="pt-2 pl-0" style="font-size:14px; font-weight:700; color: rgba(0, 0, 0, 0.4);"> Folio: {{detail.id}}</v-card-subtitle>
@@ -63,22 +63,23 @@
                         <v-card-title style="font-size:16px;" class="pt-2 pb-4 px-2">{{detail.company.attributes.name}}</v-card-title>
                         <v-card-subtitle>Vendedor: {{detail.user.name}} {{detail.user.last}}</v-card-subtitle>
                     </v-card>
-                    <v-row class="pa-6 ma-0" v-for="(item, index) in detail.items" v-bind:key="index">
-                        <div>
-                            <strong>{{item.quantity}}{{item.item.unit.name}} | </strong>
-                            <br/>
-                            {{item.item.name}}
-                        </div>
+                    <v-row class="px-6 ma-0" v-for="(item, index) in detail.items" v-bind:key="index">
+                        
+                        <v-text-field v-if="detail.is_in_production" outlined dense suffix="kilogramo(s)" class="mr-5" style="max-width:200px!important;" v-model="item.quantity"></v-text-field> 
+                        <div class="pt-2 mr-1" v-else style="font-weight:400; font-size:18px;">- {{item.quantity}} {{item.item.unit.name}}s de </div>
+                        <div class="pt-2" style="font-weight:500; font-size:18px;">{{item.item.name}}</div>
                     </v-row>
-                    <v-row class="ma-0 py-5 px-6" style="background-color:#ffedb3;">
+                    <v-row class="ma-0 mt-6 py-5 px-6" style="background-color:#ffedb3;">
                             <span style="font-weight:600;" class="mr-2">Nota(s): </span>
                             {{detail.note}}
                     </v-row>
 
-                    <v-btn v-if="detail.is_in_production!=true" @click="sheet = true" bottom x-large color="#e25200" dark fixed right style="margin-bottom:70px;">
-                        <strong style="font-size:21px;">modificar peso de pedidos</strong>
+                    
+
+                    <v-btn v-if="detail.is_in_production!=true" @click="sheet = true" bottom x-large color="#e25200" dark fixed right>
+                        <strong style="font-size:21px;">comenzar producción</strong>
                     </v-btn>
-                    <v-btn @click="sheet2 = true" bottom x-large color="primary" dark fixed right>
+                    <v-btn v-else @click="sheet2 = true" bottom x-large color="primary" dark fixed right>
                         <strong style="font-size:21px;">surtido</strong>
                     </v-btn>
                 </div>
@@ -88,13 +89,15 @@
         <div class="text-center">
             <v-bottom-sheet v-model="sheet" inset>
                 <v-sheet class="text-center" height="150px">
-                    <div class="pt-6">
-                    ¿Vamos a comenzar?
+                    <div class="pt-6 px-12 mx-12">
+                        <v-autocomplete :rules="[v => !!v || 'Campo requerido']" class="pb-0 mb-0" outlined dense clearable v-model="producer_id" :items="usersLists" label="Productor" item-text="name" item-value="id">
+                            <template slot="no-data" class="pa-2">No existen usuarios relacionados.</template>                      
+                        </v-autocomplete>
                     </div>
-                    <v-btn class="mt-4" :loading="gris" :disabled="gris" text color="primary" @click="save()">
-                    Si
+                    <v-btn :loading="gris" disabled text color="primary" @click="save()"><!--:disabled="gris || producer_id==''"-->
+                    Comenzar
                     </v-btn>
-                    <v-btn class="mt-4" text color="grey" @click="sheet=false">
+                    <v-btn text color="grey" @click="sheet=false">
                     Cancelar
                     </v-btn>
                 </v-sheet>
@@ -123,6 +126,7 @@
 import axios from "axios";
 export default {
     data: () => ({
+        producer_id:'',
         sheet:false,
         sheet2:false,
         dialog:false,
@@ -134,6 +138,9 @@ export default {
         loading:false,
     }),
     computed:{
+        usersLists(){
+            return this.$store.state.user.users;
+        }, 
         salesList2(){
             var mañana = new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).split('T')[0].slice(0,10)
             var hoy = new Date().toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).split('T')[0].slice(0,10)
@@ -193,18 +200,14 @@ export default {
             this.gris = true
             var order = [this.detail].map(id=>{
                 return{
-                    id:id.id,
-                    quotation_items:id.items.map(item=>{
-                        return{
-                            item_id:item.item.id,
-                            quantity:item.quantity
-                        }
-                    }),
-                    created_by_user_id:id.created_by_user_id.id,
+                    producer_id:this.producer_id,
+                    quotation_id: this.detail.id
                 }
             })[0]
             this.$nextTick(() => {
                 axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/start_order_production", order).then(response=>{
+                    this.production_id = response.data.id
+                    this.producer_id = ''
                     this.sheet = false
                     this.dialog = false
                     this.gris = false
@@ -250,17 +253,19 @@ export default {
             })
         },
         save2(){
+            if(this.detail.production_id!=undefined){
+                this.production_id = this.detail.production_id
+            }
             this.gris = true
             var order = [this.detail].map(id=>{
                 return{
-                    id:id.id,
-                    quotation_items:id.items.map(item=>{
+                    production_id:this.production_id,
+                    quotation_detail:id.items.map(item=>{
                         return{
                             item_id:item.item.id,
                             quantity:item.quantity
                         }
                     }),
-                    created_by_user_id:id.created_by_user_id.id,
                 }
             })[0]
             console.log(order)

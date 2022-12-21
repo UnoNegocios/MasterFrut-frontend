@@ -199,6 +199,23 @@
                 </v-tooltip>
                 </div>
 
+                <!-- pedidos -->
+                <div v-show="permissions('pedidos')">
+                <v-tooltip right open-delay="1000">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-list-item v-bind="attrs" v-on="on" to="/pedidos" link >
+                      <v-list-item-action class="mr-3">
+                        <v-icon>  mdi-file-document-outline</v-icon>
+                      </v-list-item-action>
+                      <v-list-item-content>
+                        <v-list-item-title>Pedidos</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                  <span></span>
+                </v-tooltip>
+                </div>
+
                 <!-- ventas -->
                 <!--div v-show="permissions('sales')">
                 <v-tooltip right open-delay="1000">
@@ -396,6 +413,22 @@
                       </v-list-item>
                       </template>
                     <span>Lista de rutas de envio con detalle</span>
+                  </v-tooltip>
+                </div>
+                <!-- envios -->
+                <div v-show="permissions('shippings')">
+                  <v-tooltip right open-delay="1000">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-list-item to="/solitario" link v-bind="attrs" v-on="on">
+                        <v-list-item-action class="mr-3">
+                          <v-icon>mdi-call-split</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                          <v-list-item-title>Crear Envío</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                      </template>
+                    <span>Vista "solitario" para crear rutas de envío</span>
                   </v-tooltip>
                 </div>
 
@@ -762,7 +795,7 @@
       </v-list>
       <template v-slot:append>
         <div style="color:#9ca3a5; font-size: 12px;" class="pa-2">
-          UNOCRM | v4.1.44 <v-icon> mdi-settings</v-icon>
+          UNOCRM | v4.1.45 <v-icon> mdi-settings</v-icon>
         </div>
       </template>
     </v-navigation-drawer>

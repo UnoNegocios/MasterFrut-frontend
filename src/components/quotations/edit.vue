@@ -89,13 +89,13 @@
                                 <v-list-item v-on="on" v-bind="attrs">
                                     <v-list-item-content>
                                         <v-list-item-title>
-                                            {{item.name}} | {{(item.price*1).toLocaleString('es-MX', { style: 'currency', currency: 'MXN',})}}
-                                            <div>
+                                            {{item.name}} <!--| {{(item.price*1).toLocaleString('es-MX', { style: 'currency', currency: 'MXN',})}}-->
+                                            <!--div>
                                                 <span style="font-size:12px;">Categoría:</span>
                                                 <template v-for="(category, index) in item.categories">
                                                     <v-chip  v-bind:key="index" small class="ml-2"  style="font-size:8px;">{{categoryName(category)}}</v-chip>
                                                 </template>
-                                            </div>
+                                            </div-->
                                             <div>
                                                 <span style="font-size:14px;">Inventario:
                                                     <strong v-if="item.inventory<1" style="color:red!important;">{{item.inventory}}</strong>

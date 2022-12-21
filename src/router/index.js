@@ -90,6 +90,11 @@ const routes = [
     component: () => import('../components/sales/table.vue')
   },
   {
+    path: '/pedidos',
+    name: 'Pedidos',
+    component: () => import('../components/pedidos/table.vue')
+  },
+  {
     path: '/sales/:sale_id',
     name: 'Sales',
     component: () => import('../components/sales/table2.vue')

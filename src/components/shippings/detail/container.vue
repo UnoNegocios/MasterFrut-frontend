@@ -154,7 +154,7 @@
                                         <div class="pa-2" style="background:white;">
                                             <strong style="font-size:12px;">Adjunta factura para continuar</strong>
                                             <vue-dropzone class="mb-2" ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" :useCustomSlot="true" v-on:vdropzone-success="uploadSuccess" v-on:vdropzone-error="uploadError" v-on:vdropzone-removed-file="fileRemoved"/>
-                                            <v-btn @click="saveCompleted(shipping.id)" :disabled="fileName==''" small rounded color="primary" class="elevation-0"> Guardar</v-btn>
+                                            <v-btn @click="saveCompleted(shipping.id)"  small rounded color="primary" class="elevation-0"> Guardar</v-btn><!-- :disabled="fileName==''" -->
                                         </div>
                                     </v-menu>
 

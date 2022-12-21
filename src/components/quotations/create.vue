@@ -54,7 +54,7 @@
                             </template> 
                         </v-autocomplete>
                     </v-col--> 
-                    <v-col class="pt-0" cols="12" sm="6" md="4" v-if="quole=='Venta'">
+                    <v-col class="pt-0" cols="12" sm="6" md="4" v-if="quole=='Venta'||quole=='Pedido'">
                         <v-menu v-model="datePicker" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px" >
                             <template v-slot:activator="{ on }">
                                 <v-text-field :rules="[v => !!v || 'Campo requerido']" clearable required v-model="quotation.date" label="Fecha Programada" prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
@@ -77,25 +77,25 @@
                     </v-col>
                 </v-row>  
                 
-                <v-row style="background-color: #94949417;" class="px-2 ma-0 py-2" v-for="(item,k) in quotation.items" :key="k">
+                <v-row v-if="status=='vendido'" style="background-color: #94949417;" class="px-2 ma-0 py-2" v-for="(item,k) in quotation.items" :key="k">
                     
                     <v-col ols="12" sm ="4" md="1" class="py-0 my-0">
                         <v-text-field type=number v-model="item.quantity" label="Cantidad"></v-text-field><!--:disabled="yanohay(item.quantity, item.item, k)" -->
                     </v-col>
-                    <v-col ols="12" sm ="8" md="6" class="py-0 my-0">
+                    <v-col ols="12" sm ="8" md="4" class="py-0 my-0">
                         <v-autocomplete item-text="detail"  v-model="item.item" :items="itemLists" item-value="id" label="Producto">
                             <template slot="no-data" class="pa-2">No existen productos relacionados.</template>  
                             <template v-slot:item="{item, attrs, on}">
                                 <v-list-item v-on="on" v-bind="attrs">
                                     <v-list-item-content>
                                         <v-list-item-title>
-                                            {{item.name}} | {{(item.price*1).toLocaleString('es-MX', { style: 'currency', currency: 'MXN',})}}
-                                            <div>
+                                            {{item.name}} <!--| {{(item.price*1).toLocaleString('es-MX', { style: 'currency', currency: 'MXN',})}}-->
+                                            <!--div>
                                                 <span style="font-size:12px;">Categoría:</span>
                                                 <template v-for="(category, index) in item.categories">
                                                     <v-chip  v-bind:key="index" small class="ml-2"  style="font-size:8px;">{{categoryName(category)}}</v-chip>
                                                 </template>
-                                            </div>
+                                            </div-->
                                             <div>
                                                 <span style="font-size:14px;">Inventario:
                                                     <strong v-if="item.inventory<1" style="color:red!important;">{{item.inventory}}</strong>
@@ -108,8 +108,47 @@
                             </template> 
                         </v-autocomplete>
                     </v-col>
-                    <v-col cols="12" sm ="8" md="4" class="py-0 my-0">
-                        <v-text-field disabled v-model="item.price" prefix="$" suffix="c/u" label="Precio Ajustado"></v-text-field>
+                    <v-col cols="12" sm ="8" md="3" class="py-0 my-0">
+                        <v-text-field disabled v-model="item.price" prefix="$" suffix="c/u" label="Precio Unitario"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm ="8" md="3" class="py-0 my-0">
+                        <v-text-field disabled v-model="item.price" prefix="$" label="Precio Total"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm ="4" md="1">
+                        <v-icon v-if="editProducts" @click="remove(k)" v-show="k || ( !k && quotation.items.length > 1)" color="red">mdi-close</v-icon>
+                        <v-icon @click="add(k)" v-show="k == quotation.items.length-1" color="primary">mdi-plus</v-icon>
+                    </v-col>
+                </v-row>
+                <v-row v-else style="background-color: #94949417;" class="px-2 ma-0 py-2" v-for="(item,k) in quotation.items" :key="k">
+                    
+                    <v-col ols="12" sm ="4" md="4" class="py-0 my-0">
+                        <v-text-field type=number v-model="item.quantity" label="Cantidad"></v-text-field><!--:disabled="yanohay(item.quantity, item.item, k)" -->
+                    </v-col>
+                    <v-col ols="12" sm ="7" md="7" class="py-0 my-0">
+                        <v-autocomplete item-text="detail"  v-model="item.item" :items="itemLists" item-value="id" label="Producto">
+                            <template slot="no-data" class="pa-2">No existen productos relacionados.</template>  
+                            <template v-slot:item="{item, attrs, on}">
+                                <v-list-item v-on="on" v-bind="attrs">
+                                    <v-list-item-content>
+                                        <v-list-item-title>
+                                            {{item.name}} <!--| {{(item.price*1).toLocaleString('es-MX', { style: 'currency', currency: 'MXN',})}}-->
+                                            <!--div>
+                                                <span style="font-size:12px;">Categoría:</span>
+                                                <template v-for="(category, index) in item.categories">
+                                                    <v-chip  v-bind:key="index" small class="ml-2"  style="font-size:8px;">{{categoryName(category)}}</v-chip>
+                                                </template>
+                                            </div-->
+                                            <div>
+                                                <span style="font-size:14px;">Inventario:
+                                                    <strong v-if="item.inventory<1" style="color:red!important;">{{item.inventory}}</strong>
+                                                    <strong v-else style="color:green!important;">{{item.inventory}}</strong>
+                                                </span>
+                                            </div>
+                                        </v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </template> 
+                        </v-autocomplete>
                     </v-col>
                     <v-col cols="12" sm ="4" md="1">
                         <v-icon v-if="editProducts" @click="remove(k)" v-show="k || ( !k && quotation.items.length > 1)" color="red">mdi-close</v-icon>
@@ -366,11 +405,9 @@ import axios from "axios";
             },
             todaviano(){
                 if(this.quotation.company_id!=null&&this.quotation.user_id!=null&&this.quotation.type!=''){
-                    if(this.quole=='Venta'&&this.quotation.date!=''){
-                        console.log(this.quotation.date)
+                    if((this.quole=='Venta'||this.quole=='Pedido')&&this.quotation.date!=''){
                         return false
                     }else if(this.quole=='Cotización'&&this.quotation.due_date!=''){
-                        console.log(this.quotation.due_date)
                         return false
                     }else{
                         return true
@@ -416,6 +453,8 @@ import axios from "axios";
                     return 'Venta'
                 }else if(this.status=='quotation'){
                     return 'Cotización'
+                } else if(this.status=='pedido'){
+                    return 'Pedido'
                 } 
             } 
         },
@@ -528,7 +567,6 @@ import axios from "axios";
                 })
             },
             save(){
-                console.log(this.quotation)
                 var indexs = []
                 for(var i=0; i<this.quotation.items.length; i++){
                     if(this.quotation.items[i].item == ''){
@@ -554,7 +592,7 @@ import axios from "axios";
                 this.quotation.status = this.status 
                 this.$nextTick(() => {
                     axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v1/quotation/create",Object.assign(this.quotation)).then(response=>{
-                        this.$store.dispatch('quotation/getQuotations')
+                        this.close()
                     }).catch(error => {
                         this.snackbar = {
                             message: error.response.data.message,
@@ -563,9 +601,7 @@ import axios from "axios";
                         }
                         this.gris = false
                     })
-                    this.$nextTick(() => {
-                        this.close()
-                    })
+                    
                 })
             },
             closeCreateDialogContact: function(params) {

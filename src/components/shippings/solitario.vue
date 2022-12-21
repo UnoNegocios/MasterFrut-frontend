@@ -229,18 +229,7 @@ export default {
     },
     methods: {
         save(){
-            this.$nextTick(() => {
-                axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/shipping/bulk-create", this.itemToSave).then(response=>{
-                    location.reload()
-                }).catch(error => {
-                    this.snackbar = {
-                        message: error.response.data.message,
-                        color: 'error',
-                        show: true
-                    }
-                    this.gris = false
-                })
-            })
+            console.log(this.itemToSave)
         },
         confirmShipping(){
             var editedItem = []
