@@ -76,7 +76,7 @@
 
                     
 
-                    <v-btn v-if="detail.is_in_production!=true" @click="sheet = true" bottom x-large color="#e25200" dark fixed right>
+                    <v-btn v-if="detail.is_in_production!=true || detail.production_id==''" @click="sheet = true" bottom x-large color="#e25200" dark fixed right>
                         <strong style="font-size:21px;">comenzar producción</strong>
                     </v-btn>
                     <v-btn v-else @click="sheet2 = true" bottom x-large color="primary" dark fixed right>
@@ -94,7 +94,7 @@
                             <template slot="no-data" class="pa-2">No existen usuarios relacionados.</template>                      
                         </v-autocomplete>
                     </div>
-                    <v-btn :loading="gris" disabled text color="primary" @click="save()"><!--:disabled="gris || producer_id==''"-->
+                    <v-btn :loading="gris" :disabled="gris || producer_id==''" text color="primary" @click="save()">
                     Comenzar
                     </v-btn>
                     <v-btn text color="grey" @click="sheet=false">
@@ -126,6 +126,7 @@
 import axios from "axios";
 export default {
     data: () => ({
+        production_id:'',
         producer_id:'',
         sheet:false,
         sheet2:false,
@@ -139,7 +140,7 @@ export default {
     }),
     computed:{
         usersLists(){
-            return this.$store.state.user.users;
+            return this.$store.state.user.users//.filter(a=>a.job_position == 'Producción');
         }, 
         salesList2(){
             var mañana = new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).split('T')[0].slice(0,10)
@@ -201,12 +202,12 @@ export default {
             var order = [this.detail].map(id=>{
                 return{
                     producer_id:this.producer_id,
-                    quotation_id: this.detail.id
+                    sale_id: this.detail.id
                 }
             })[0]
             this.$nextTick(() => {
-                axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/start_order_production", order).then(response=>{
-                    this.production_id = response.data.id
+                axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/productions", order).then(response=>{
+                    this.detail.production_id = response.data.id
                     this.producer_id = ''
                     this.sheet = false
                     this.dialog = false
@@ -253,16 +254,13 @@ export default {
             })
         },
         save2(){
-            if(this.detail.production_id!=undefined){
-                this.production_id = this.detail.production_id
-            }
             this.gris = true
             var order = [this.detail].map(id=>{
                 return{
-                    production_id:this.production_id,
+                    //production_id:this.production_id,
                     quotation_detail:id.items.map(item=>{
                         return{
-                            item_id:item.item.id,
+                            quotation_detail_id:item.id,
                             quantity:item.quantity
                         }
                     }),
@@ -270,7 +268,7 @@ export default {
             })[0]
             console.log(order)
             this.$nextTick(() => {
-                axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/dispatch_sale_order", order).then(response=>{
+                axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/dispatch_production/"+this.production_id, order).then(response=>{
                     this.sheet2 = false
                     this.dialog = false
                     this.gris = false

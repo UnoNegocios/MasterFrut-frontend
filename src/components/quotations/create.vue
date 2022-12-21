@@ -76,8 +76,8 @@
                         </v-autocomplete>
                     </v-col>
                 </v-row>  
-                
-                <v-row v-if="status=='vendido'" style="background-color: #94949417;" class="px-2 ma-0 py-2" v-for="(item,k) in quotation.items" :key="k">
+                <div v-if="status=='vendido'">
+                <v-row style="background-color: #94949417;" class="px-2 ma-0 py-2" v-for="(item,k) in quotation.items" :key="k">
                     
                     <v-col ols="12" sm ="4" md="1" class="py-0 my-0">
                         <v-text-field type=number v-model="item.quantity" label="Cantidad"></v-text-field><!--:disabled="yanohay(item.quantity, item.item, k)" -->
@@ -109,7 +109,7 @@
                         </v-autocomplete>
                     </v-col>
                     <v-col cols="12" sm ="8" md="3" class="py-0 my-0">
-                        <v-text-field disabled v-model="item.price" prefix="$" suffix="c/u" label="Precio Unitario"></v-text-field>
+                        <v-text-field disabled v-model="item.unit_price" prefix="$" suffix="c/u" label="Precio Unitario"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm ="8" md="3" class="py-0 my-0">
                         <v-text-field disabled v-model="item.price" prefix="$" label="Precio Total"></v-text-field>
@@ -119,7 +119,9 @@
                         <v-icon @click="add(k)" v-show="k == quotation.items.length-1" color="primary">mdi-plus</v-icon>
                     </v-col>
                 </v-row>
-                <v-row v-else style="background-color: #94949417;" class="px-2 ma-0 py-2" v-for="(item,k) in quotation.items" :key="k">
+                </div>
+                <div v-else>
+                <v-row style="background-color: #94949417;" class="px-2 ma-0 py-2" v-for="(item,k) in quotation.items" :key="k">
                     
                     <v-col ols="12" sm ="4" md="4" class="py-0 my-0">
                         <v-text-field type=number v-model="item.quantity" label="Cantidad"></v-text-field><!--:disabled="yanohay(item.quantity, item.item, k)" -->
@@ -155,6 +157,7 @@
                         <v-icon @click="add(k)" v-show="k == quotation.items.length-1" color="primary">mdi-plus</v-icon>
                     </v-col>
                 </v-row>
+                </div>
                 <v-row>
                     <v-spacer/>
                     <v-btn x-small text @click="editProducts=!editProducts"> Editar Productos<v-icon x-small color="grey">mdi-pencil</v-icon></v-btn>
@@ -333,6 +336,7 @@ import axios from "axios";
             productTotal:{
                 handler(){
                     for(var i=0; i<this.quotation.items.length; i++){
+                        this.quotation.items[i].unit_price = (((this.itemLists.filter(item=>item.id == this.quotation.items[i].item).map(item=>item.price)[0]/100)*(100+this.client_percentage))*1).toFixed(2)
                         this.quotation.items[i].price = (((this.itemLists.filter(item=>item.id == this.quotation.items[i].item).map(item=>item.price)[0]/100)*(100+this.client_percentage))*this.quotation.items[i].quantity).toFixed(2)
                     }
                 }, deep:true
@@ -541,6 +545,7 @@ import axios from "axios";
             },
             add(index) {
                 this.quotation.items.push({ quantity: 1, item: '', price:'' });
+                console.log(this.quotation.items)
             },
             remove(index) {
                 this.quotation.items.splice(index, 1);
