@@ -1,7 +1,7 @@
 <template>
     <div>
         {{sales}}
-        <vue-horizontal v-if="render" class="ma-6 mt-0">
+        <vue-horizontal class="ma-6 mt-0">
             <div style="width:20%; margin:15px;" v-for="(shipping, index) in shippings" v-bind:key="index">
                 <v-row class="ma-0 mb-1">
                     <v-spacer/>
@@ -63,7 +63,23 @@
                 </draggable>
             </div>
         </vue-horizontal>
+        <v-progress-linear class="my-2 mx-12" v-else color="primary" indeterminate rounded height="6"></v-progress-linear>
         <!-- Guardar -->
+        
+        <v-menu top :close-on-content-click="closeDatePicker" content-class="elevation-0">
+            <template v-slot:activator="{ on, attrs }">
+                <v-btn v-bind="attrs" v-on="on" small bottom color="primary" dark fab fixed right style="bottom: 90px; right: 25px;">
+                    <v-chip v-if="dateFilter.length==2" small style="margin-left:-210px; width:360px; margin-right:18px; border-radius:5px;"> {{dateFilter[0]}} al {{dateFilter[1]}} </v-chip>
+                    <v-icon color="white" small>mdi-filter</v-icon>
+                </v-btn>
+            </template>
+            <v-row class="ma-0">
+                <v-spacer/>
+                <v-chip v-if="dateFilter.length==2" small style="border-radius:5px;" class="mb-2" @click="dateFilter=[] "> <strong>Limpiar Filtro</strong> <v-icon x-small>mdi-filter-off</v-icon> </v-chip>
+            </v-row>
+            <v-date-picker v-model="dateFilter" range></v-date-picker>
+        </v-menu>
+        
         <v-btn @click="confirmShipping" bottom color="#e25200" dark fab fixed right>
             <v-icon color="white">  mdi-content-save-outline </v-icon>
         </v-btn> 
@@ -131,6 +147,7 @@ export default {
     },
     data() {
         return {
+            dateFilter:[],
             gris:false,
             snackbar: {
                 show: false,
@@ -168,6 +185,13 @@ export default {
         this.$emit("closeDrawer", false);
     },
     computed:{
+        closeDatePicker(){
+            if(this.dateFilter.length==2 || this.dateFilter.length==0){
+                return true
+            }else{
+                return false
+            }
+        },
         today(){
             return new Date().toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).toString().slice(0, 10)
         },
@@ -179,9 +203,41 @@ export default {
             get(){
                 return this.$store.state.currentUser.user
             }
-        } ,
+        },
         sales(){
-            axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/dispatched_orders?filter[date_between]="+[this.today,this.tomorrow]).then(response => {
+            if(this.dateFilter.length==2||this.dateFilter.length==0){
+                this.getSales()
+            }
+            return ''
+        },
+        vehicleLists(){
+            return this.$store.state.vehicle.vehicles.map(id=>{
+                return{
+                    attributes: {'name':id.name, 'id': id.id, 'max_weight_capacity': id.max_weight_capacity},
+                    name: id.name
+                }
+            });
+        },
+        usersLists(){
+            return this.$store.state.user.users.filter(user=>user.job_position == 'Chofer Repartidor' || user.job_position == 'Chofer Ejecutivo').map(id=>{
+                return{
+                    attributes: {'name':id.name, 'last': id.last, 'id': id.id},
+                    name: id.name + ' ' + id.last
+                }
+            });
+        },
+    },
+    methods: {
+        getSales(){
+            var date =[]
+            if(this.dateFilter.length==2){
+                date = this.dateFilter.sort()
+                this.dateFilter = date
+            }else{
+                date = [this.today,this.tomorrow]
+            }
+            this.render = false
+            axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/dispatched_orders?filter[date_between]="+date+"&itemsPerPage=500").then(response => {
                 this.monterreySales = response.data.data.filter(data=>this.lowerCase(data.company.attributes.delivery_address).includes('monterrey') || this.lowerCase(data.company.attributes.delivery_address).includes('mty'))
                 this.guadalupeSales = response.data.data.filter(data=>this.lowerCase(data.company.attributes.delivery_address).includes('guadalupe') || this.lowerCase(data.company.attributes.delivery_address).includes('gpe'))
                 this.sannicolasSales = response.data.data.filter(data=>this.lowerCase(data.company.attributes.delivery_address).includes('san nicolas') || this.lowerCase(data.company.attributes.delivery_address).includes('san nicolás'))
@@ -208,28 +264,20 @@ export default {
                 )
                 this.render = true
             })
-            return ''
         },
-        vehicleLists(){
-            return this.$store.state.vehicle.vehicles.map(id=>{
-                return{
-                    attributes: {'name':id.name, 'id': id.id, 'max_weight_capacity': id.max_weight_capacity},
-                    name: id.name
-                }
-            });
-        },
-        usersLists(){
-            return this.$store.state.user.users.filter(user=>user.job_position == 'Chofer Repartidor' || user.job_position == 'Chofer Ejecutivo').map(id=>{
-                return{
-                    attributes: {'name':id.name, 'last': id.last, 'id': id.id},
-                    name: id.name + ' ' + id.last
-                }
-            });
-        },
-    },
-    methods: {
         save(){
-            console.log(this.itemToSave)
+            this.$nextTick(() => {
+                axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/shipping/bulk-create", this.itemToSave).then(response=>{
+                    this.getSales()
+                }).catch(error => {
+                    this.snackbar = {
+                        message: error.response.data.message,
+                        color: 'error',
+                        show: true
+                    }
+                    this.gris = false
+                })
+            })
         },
         confirmShipping(){
             var editedItem = []
@@ -244,7 +292,6 @@ export default {
                     shipping_details: this.mapSalesforShippings(this.shippings[i].sales)
                 })
             }
-
             this.itemToSave = editedItem
             this.$nextTick(()=>{
                 this.saveDialog = true

@@ -126,7 +126,7 @@
                 <td :colspan="headers.length" class="pb-4">
                     <v-row class="pa-6 pb-0">
                         <v-col cols="12" sm="6" md="6">
-                            <v-data-table hide-default-footer :items-per-page="item.items.length" :headers="headers2" :items="item.items" v-if="item.items!=undefined" class="elevation-0" style="background: #f7f7f7;!important" dense>
+                            <v-data-table :items-per-page="item.items.length" :headers="headers2" :items="item.items" v-if="item.items!=undefined" class="elevation-0" style="background: #f7f7f7;!important" dense>
                                 <template v-slot:footer>
                                     <v-container style="max-width: 100%!important;">
 

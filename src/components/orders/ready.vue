@@ -209,7 +209,7 @@ export default {
             { text: 'Subtotal', value: 'subtotal' },
             { text: 'IVA', value: 'iva' },
             { text: 'Total', value: 'total' },
-            { text: 'Peso', value: 'sale_total_weight' },
+            { text: 'Peso', value: 'items_kg_total' },
             { text: 'Creación', value: 'created_at' },
             { text: 'Usuario Creador', value: 'created_by_user_id' },
             { text: 'Edición', value: 'updated_at' },
