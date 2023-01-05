@@ -192,18 +192,18 @@
                 <template v-slot:[`item.completed`]="{ item }">
                     <v-icon v-if="item.completed==true">mdi-check</v-icon>
 
-                    <v-menu v-else offset-y :close-on-content-click="false">
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn color="primary" dark v-bind="attrs" v-on="on" icon>
+                    <!--v-menu v-else offset-y :close-on-content-click="false">
+                        <template v-slot:activator="{ on, attrs }"-->
+                            <v-btn v-else color="primary" dark icon @click="saveCompleted(item.id)"> <!--v-bind="attrs" v-on="on"-->
                                 <v-icon>mdi-close</v-icon>
                             </v-btn>
-                        </template>
+                        <!--/template>
                         <div class="pa-2" style="background:white;">
                             <strong style="font-size:12px;">Adjunta factura para continuar</strong>
                             <vue-dropzone class="mb-2" ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" :useCustomSlot="true" v-on:vdropzone-success="uploadSuccess" v-on:vdropzone-error="uploadError" v-on:vdropzone-removed-file="fileRemoved"/>
-                            <v-btn @click="saveCompleted(item.id)" :disabled="fileName==''" small rounded color="primary" class="elevation-0"> Guardar</v-btn>
+                            <v-btn :disabled="fileName==''" small rounded color="primary" class="elevation-0"> Guardar</v-btn>
                         </div>
-                    </v-menu>
+                    </v-menu-->
                 </template>
                 <!-- Tabla sin información -->
                 <template v-slot:no-data>

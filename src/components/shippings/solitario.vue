@@ -268,7 +268,7 @@ export default {
         save(){
             this.$nextTick(() => {
                 axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/shipping/bulk-create", this.itemToSave).then(response=>{
-                    this.getSales()
+                    location.reload()
                 }).catch(error => {
                     this.snackbar = {
                         message: error.response.data.message,

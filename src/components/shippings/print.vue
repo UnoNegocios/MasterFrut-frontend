@@ -8,7 +8,7 @@
             <v-col cols=4 class="tabla py-1">Chofer: {{shipping.driver}}</v-col>
 
             <v-col cols=4 class="tabla py-1">Unidad: {{shipping.vehicle}}</v-col>
-            <v-col cols=4 class="tabla py-1">Peso: {{shipping.weight}}kg</v-col>
+            <v-col cols=4 class="tabla py-1">Peso: {{shipping.weight}}</v-col>
             <v-col cols=4 class="tabla py-1">Impresión: {{date}}</v-col>
 
             <v-col cols=12 class="tabla py-1">Notas: {{shipping.note}}</v-col>
@@ -66,10 +66,6 @@ export default {
         localStorage.removeItem("printShipping");
         axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/sales?filter[id]=" + this.shipping.details.map(sale=>sale.sale.id)).then(response => {
             this.sales = response.data.data
-            console.log(this.sales)
-            console.log(this.sales[0].company.attributes.name)
-            console.log(this.sales[0].items[0].item.unit.name)
-            console.log(this.sales[0].items[0].item.name)
         })
     },
     methods:{
@@ -121,10 +117,3 @@ export default {
    line-height: 15px!important;
 }
 </style>
-
-
-Nombre completo: Joel Victor de la Fuente Rodríguez
-Código del producto SKU: 41745809
-Correo electrónico: joelrdz98@gmail.com
-Número telefónico: 8123523623
-Método de pago: tarjeta de crédito

@@ -544,7 +544,7 @@ export default {
             XLSX.writeFile(workbook, `${filename}.xlsx`)
         },
         deleteShipping(){
-            axios.delete(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/shippins/"+this.deleteId).then(response => {
+            axios.delete(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/shippings/"+this.deleteId).then(response => {
                 this.deleteId = ''
                 this.sheet = false
                 this.getDataFromApi()
