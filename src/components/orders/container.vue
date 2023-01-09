@@ -74,7 +74,7 @@
                     </v-row>
 
 
-                    <v-btn v-if="detail.production_id==''" @click="sheet = true" bottom x-large color="#e25200" dark fixed right>
+                    <v-btn v-if="detail.production_id==''||detail.production_id==null||detail.production_id==undefined" @click="sheet = true" bottom x-large color="#e25200" dark fixed right>
                         <strong style="font-size:21px;">comenzar producción</strong>
                     </v-btn>
                     <v-btn v-else @click="sheet2 = true" bottom x-large color="primary" dark fixed right>
