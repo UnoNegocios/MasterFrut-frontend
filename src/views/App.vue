@@ -40,6 +40,124 @@
 
         <v-divider class="ma-4"></v-divider>
 
+        <!-- Logistica -->
+        <div v-show="permissions('shippings') || permissions('orders')">
+        
+        <v-expansion-panels class="sinsombra">
+          <v-expansion-panel style="background:transparent!important;">
+            <v-expansion-panel-header style="font-weight:500; font-size:0.8125rem; color:#202020; padding:0px!important;">
+              <div>
+                <v-tooltip right open-delay="1000">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-list-item link v-bind="attrs" v-on="on">
+                      <v-list-item-action class="mr-3">
+                        <v-icon>mdi-map-marker-path</v-icon>
+                      </v-list-item-action>
+                      <v-list-item-content>
+                        <v-list-item-title>Logistica</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    </template>
+                  <span></span>
+                </v-tooltip>
+              </div>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+
+              <!-- pedidos -->
+                <div v-show="permissions('pedidos')">
+                <v-tooltip right open-delay="1000">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-list-item v-bind="attrs" v-on="on" to="/pedidos" link >
+                      <v-list-item-action class="mr-3">
+                        <v-icon>  mdi-file-document-outline</v-icon>
+                      </v-list-item-action>
+                      <v-list-item-content>
+                        <v-list-item-title>Pedidos</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                  <span></span>
+                </v-tooltip>
+              </div>
+          
+                
+
+                <!-- envios -->
+                <div v-show="permissions('orders')">
+                  <v-tooltip right open-delay="1000">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-list-item to="/orders" link v-bind="attrs" v-on="on">
+                        <v-list-item-action class="mr-3">
+                          <v-icon>mdi-package-variant</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                          <v-list-item-title>Pedidos x Surtir</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                      </template>
+                    <span>Lista de pedidos por surtir</span>
+                  </v-tooltip>
+                </div>
+
+                <div v-show="permissions('orders_ready')">
+                  <v-tooltip right open-delay="1000">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-list-item to="/orders-ready" link v-bind="attrs" v-on="on">
+                        <v-list-item-action class="mr-3">
+                          <v-icon>mdi-package-variant-closed</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                          <v-list-item-title>Pedidos Surtidos</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                      </template>
+                    <span>Lista de pedidos surtidos</span>
+                  </v-tooltip>
+                </div>
+
+                <!-- envios -->
+                <div v-show="permissions('shippings')">
+                  <v-tooltip right open-delay="1000">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-list-item to="/solitario" link v-bind="attrs" v-on="on">
+                        <v-list-item-action class="mr-3">
+                          <v-icon>mdi-call-split</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                          <v-list-item-title>Crear Envío</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                      </template>
+                    <span>Vista "solitario" para crear rutas de envío</span>
+                  </v-tooltip>
+                </div>
+
+                <!-- envios -->
+                <div v-show="permissions('shippings')">
+                  <v-tooltip right open-delay="1000">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-list-item to="/shippings" link v-bind="attrs" v-on="on">
+                        <v-list-item-action class="mr-3">
+                          <v-icon>mdi-truck-delivery-outline</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                          <v-list-item-title>Envios</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                      </template>
+                    <span>Lista de rutas de envio con detalle</span>
+                  </v-tooltip>
+                </div>
+                
+
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+        </div>
+
+        <v-divider class="ma-4"></v-divider>
+
         <!-- Actividades -->
         <v-expansion-panels class="sinsombra" v-show="permissions('activities')">
           <v-expansion-panel style="background:transparent!important;">
@@ -199,22 +317,7 @@
                 </v-tooltip>
                 </div>
 
-                <!-- pedidos -->
-                <div v-show="permissions('pedidos')">
-                <v-tooltip right open-delay="1000">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-list-item v-bind="attrs" v-on="on" to="/pedidos" link >
-                      <v-list-item-action class="mr-3">
-                        <v-icon>  mdi-file-document-outline</v-icon>
-                      </v-list-item-action>
-                      <v-list-item-content>
-                        <v-list-item-title>Pedidos</v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </template>
-                  <span></span>
-                </v-tooltip>
-                </div>
+                
 
                 <!-- ventas -->
                 <!--div v-show="permissions('sales')">
@@ -340,104 +443,7 @@
         
 
 
-        <!-- Ventas y Cobranza -->
-        <div v-show="permissions('shippings') || permissions('orders')">
-        <v-divider class="ma-4"></v-divider>
-        <v-expansion-panels class="sinsombra">
-          <v-expansion-panel style="background:transparent!important;">
-            <v-expansion-panel-header style="font-weight:500; font-size:0.8125rem; color:#202020; padding:0px!important;">
-              <div>
-                <v-tooltip right open-delay="1000">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-list-item link v-bind="attrs" v-on="on">
-                      <v-list-item-action class="mr-3">
-                        <v-icon>mdi-map-marker-path</v-icon>
-                      </v-list-item-action>
-                      <v-list-item-content>
-                        <v-list-item-title>Logistica</v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                    </template>
-                  <span></span>
-                </v-tooltip>
-              </div>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-          
-                
-
-                <!-- envios -->
-                <div v-show="permissions('orders')">
-                  <v-tooltip right open-delay="1000">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-list-item to="/orders" link v-bind="attrs" v-on="on">
-                        <v-list-item-action class="mr-3">
-                          <v-icon>mdi-package-variant</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                          <v-list-item-title>Pedidos x Surtir</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                      </template>
-                    <span>Lista de pedidos por surtir</span>
-                  </v-tooltip>
-                </div>
-
-                <div v-show="permissions('orders_ready')">
-                  <v-tooltip right open-delay="1000">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-list-item to="/orders-ready" link v-bind="attrs" v-on="on">
-                        <v-list-item-action class="mr-3">
-                          <v-icon>mdi-package-variant-closed</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                          <v-list-item-title>Pedidos Surtidos</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                      </template>
-                    <span>Lista de pedidos surtidos</span>
-                  </v-tooltip>
-                </div>
-
-                <!-- envios -->
-                <div v-show="permissions('shippings')">
-                  <v-tooltip right open-delay="1000">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-list-item to="/solitario" link v-bind="attrs" v-on="on">
-                        <v-list-item-action class="mr-3">
-                          <v-icon>mdi-call-split</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                          <v-list-item-title>Crear Envío</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                      </template>
-                    <span>Vista "solitario" para crear rutas de envío</span>
-                  </v-tooltip>
-                </div>
-
-                <!-- envios -->
-                <div v-show="permissions('shippings')">
-                  <v-tooltip right open-delay="1000">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-list-item to="/shippings" link v-bind="attrs" v-on="on">
-                        <v-list-item-action class="mr-3">
-                          <v-icon>mdi-truck-delivery-outline</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                          <v-list-item-title>Envios</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                      </template>
-                    <span>Lista de rutas de envio con detalle</span>
-                  </v-tooltip>
-                </div>
-                
-
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-        </div>
+        
 
 
 
@@ -797,7 +803,7 @@
       </v-list>
       <template v-slot:append>
         <div style="color:#9ca3a5; font-size: 12px;" class="pa-2">
-          UNOCRM | v4.1.48 <v-icon> mdi-settings</v-icon>
+          UNOCRM | v4.1.49 <v-icon> mdi-settings</v-icon>
         </div>
       </template>
     </v-navigation-drawer>

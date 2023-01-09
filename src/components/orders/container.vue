@@ -13,7 +13,6 @@
                 </v-menu>
             <v-spacer></v-spacer>
         </v-row>
-        
         <v-card style="width:100%;" class="pa-4 ma-2 pb-0" @click="viwDetail(sale)" v-for="(sale, index) in salesList" v-bind:key="index">
             <v-row class="ma-0">
                 <v-col cols="6" class="pl-0">
@@ -65,8 +64,8 @@
                     </v-card>
                     <v-row class="px-6 ma-0" v-for="(item, index) in detail.items" v-bind:key="index">
                         
-                        <v-text-field v-if="detail.production_id!=''" outlined dense suffix="kilogramo(s)" class="mr-5" style="max-width:200px!important;" v-model="item.quantity"></v-text-field> 
-                        <div class="pt-2 mr-1" v-else style="font-weight:400; font-size:18px;">- {{item.quantity}} {{item.item.unit.name}}s de </div>
+                        <v-text-field outlined dense suffix="kilogramo(s)" class="mr-5" style="max-width:200px!important;" v-model="item.quantity"></v-text-field> 
+                        <!--div class="pt-2 mr-1" v-else style="font-weight:400; font-size:18px;">- {{item.quantity}} {{item.item.unit.name}}s de </div-->
                         <div class="pt-2" style="font-weight:500; font-size:18px;">{{item.item.name}}</div>
                     </v-row>
                     <v-row class="ma-0 mt-6 py-5 px-6" style="background-color:#ffedb3;">
@@ -148,25 +147,25 @@ export default {
             switch(this.filter){
                 case 'hoy': 
                     axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]=" + hoy + ',' + hoy).then(response=>{
-                        this.salesList = response.data.data.filter(r=>!r.production_id)
+                        this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                         this.loading = true
                     })
                 break;
                 case 'mañana': 
                     axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+ mañana + ',' + mañana).then(response=>{
-                        this.salesList = response.data.data.filter(r=>!r.production_id)
+                        this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                         this.loading = true
                     })
                 break;
                 case '7': 
                     axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+ hoy + ',' + siete).then(response=>{
-                        this.salesList = response.data.data.filter(r=>!r.production_id)
+                        this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                         this.loading = true
                     })
                 break;
                 case 'mas': 
                     axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+this.dates[0] + ',' + this.dates[1]).then(response=>{
-                        this.salesList = response.data.data.filter(r=>!r.production_id)
+                        this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                         this.loading = true
                     })
                 break;
@@ -182,6 +181,13 @@ export default {
         },
     },
     methods:{
+        finishProduction(production){
+            if(production!=null){
+                return !production.is_completed
+            }else{
+                return true
+            }
+        },
         viwDetail(sale){
             this.detail = sale
             this.dialog = true
@@ -219,25 +225,25 @@ export default {
                         switch(this.filter){
                             case 'hoy': 
                                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]=" + hoy + ',' + hoy).then(response=>{
-                                    this.salesList = response.data.data.filter(r=>!r.production_id)
+                                    this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                                     this.loading = true
                                 })
                             break;
                             case 'mañana': 
                                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+ mañana + ',' + mañana).then(response=>{
-                                    this.salesList = response.data.data.filter(r=>!r.production_id)
+                                    this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                                     this.loading = true
                                 })
                             break;
                             case '7': 
                                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+ hoy + ',' + siete).then(response=>{
-                                    this.salesList = response.data.data.filter(r=>!r.production_id)
+                                    this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                                     this.loading = true
                                 })
                             break;
                             case 'mas': 
                                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+this.dates[0] + ',' + this.dates[1]).then(response=>{
-                                    this.salesList = response.data.data.filter(r=>!r.production_id)
+                                    this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                                     this.loading = true
                                 })
                             break;
@@ -256,7 +262,7 @@ export default {
             this.gris = true
             var order = [this.detail].map(id=>{
                 return{
-                    sale_id: this.detail.id,
+                    //sale_id: this.detail.id,
                     //production_id:this.production_id,
                     quotation_detail:id.items.map(item=>{
                         return{
@@ -266,9 +272,10 @@ export default {
                     }),
                 }
             })[0]
-            console.log(order)
+            console.log(this.detail)
+            
             this.$nextTick(() => {
-                axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/dispatch_production/"+this.detail.production_id, order).then(response=>{
+                axios.post(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/dispatch_production/"+this.detail.production_id.id, order).then(response=>{
                     this.sheet2 = false
                     this.dialog = false
                     this.gris = false
@@ -280,25 +287,25 @@ export default {
                         switch(this.filter){
                             case 'hoy': 
                                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]=" + hoy + ',' + hoy).then(response=>{
-                                    this.salesList = response.data.data.filter(r=>!r.production_id)
+                                    this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                                     this.loading = true
                                 })
                             break;
                             case 'mañana': 
                                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+ mañana + ',' + mañana).then(response=>{
-                                    this.salesList = response.data.data.filter(r=>!r.production_id)
+                                    this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                                     this.loading = true
                                 })
                             break;
                             case '7': 
                                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+ hoy + ',' + siete).then(response=>{
-                                    this.salesList = response.data.data.filter(r=>!r.production_id)
+                                    this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                                     this.loading = true
                                 })
                             break;
                             case 'mas': 
                                 axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+this.dates[0] + ',' + this.dates[1]).then(response=>{
-                                    this.salesList = response.data.data.filter(r=>!r.production_id)
+                                    this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                                     this.loading = true
                                 })
                             break;
@@ -312,6 +319,7 @@ export default {
                     }
                 })
             })
+            
         }
     },
     mounted(){
@@ -322,25 +330,25 @@ export default {
             switch(this.filter){
                 case 'hoy': 
                     axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]=" + hoy + ',' + hoy).then(response=>{
-                        this.salesList = response.data.data.filter(r=>!r.production_id)
+                        this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                         this.loading = true
                     })
                 break;
                 case 'mañana': 
                     axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+ mañana + ',' + mañana).then(response=>{
-                        this.salesList = response.data.data.filter(r=>!r.production_id)
+                        this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                         this.loading = true
                     })
                 break;
                 case '7': 
                     axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+ hoy + ',' + siete).then(response=>{
-                        this.salesList = response.data.data.filter(r=>!r.production_id)
+                        this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                         this.loading = true
                     })
                 break;
                 case 'mas': 
                     axios.get(process.env.VUE_APP_BACKEND_ROUTE + "api/v2/orders/orders_to_dispatch?filter[date_between]="+this.dates[0] + ',' + this.dates[1]).then(response=>{
-                        this.salesList = response.data.data.filter(r=>!r.production_id)
+                        this.salesList = response.data.data.filter(r=>this.finishProduction(r.production_id))
                         this.loading = true
                     })
                 break;
